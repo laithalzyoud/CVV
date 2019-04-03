@@ -1,3 +1,3 @@
 # cvv
 
-CVV Network Prototype
+Curriculum Vitae Verus
