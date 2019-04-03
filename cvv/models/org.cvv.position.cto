@@ -1,0 +1,44 @@
+namespace org.cvv.position
+
+import org.cvv.employer.*
+import org.cvv.employee.*
+
+
+asset position identified by positionId {
+  
+  o String positionId
+  o String positionName
+  o String employerId
+  --> Employee owner	optional 
+  
+}
+
+transaction createPosition {
+  
+  o String positionId
+  o String positionName
+  o String employerId
+}
+
+transaction assignPosition {
+ 
+  o String positionId
+  o Employee currentEmployee	optional
+  o Employee newEmployee
+  o DateTime hireDate
+  
+}
+
+transaction revokePosition {
+ 
+  o String positionId
+  o String currentEmployeeId 
+  o String newEmployeeId	optional
+  o String terminationCause
+  o Integer punctualityRating	range = [1,10]
+  o Integer teamworkRating		range = [1,10]
+  o Integer performanceRating 	range = [1,10]
+  o Integer cultureRating 		range = [1,10]
+  o DateTime terminationDate
+  
+}

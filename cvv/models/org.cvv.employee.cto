@@ -1,0 +1,11 @@
+namespace org.cvv.employee
+
+import org.cvv.employer.Contact
+
+participant Employee identified by employeeId {
+  
+  o String employeeId
+  o String firstName
+  o String lastName
+  o Contact contactInfo
+}
