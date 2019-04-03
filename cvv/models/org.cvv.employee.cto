@@ -7,5 +7,8 @@ participant Employee identified by employeeId {
   o String employeeId
   o String firstName
   o String lastName
-  o Contact contactInfo
+  o String PhoneNo
+  o String email	//regex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/
+  o String address
+  
 }

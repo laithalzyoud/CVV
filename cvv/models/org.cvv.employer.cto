@@ -23,8 +23,9 @@ namespace org.cvv.employer
 participant Employer identified by employerId {
   o String employerId
   o String companyName
-  o Contact contactInfo
   o String companyPhoneNo
+  o String email	//regex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/
+  o String address
 }
 
 // participant HRmanager identified by HRId extends Employer {
@@ -49,11 +50,7 @@ event SampleEvent {
 // --> Job asset
   o String oldValue
   o String newValue
+
 }
 
-concept Contact {
-  
-  o String email	//regex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/
-  o String mobileNumber
-  o String address
-}
+
