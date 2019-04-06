@@ -46,11 +46,5 @@ participant Employer identified by employerId {
 // }
 
 
-event SampleEvent {
-// --> Job asset
-  o String oldValue
-  o String newValue
-
-}
 
 

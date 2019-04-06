@@ -15,7 +15,6 @@ asset position identified by positionId {
 
 transaction createPosition {
   
-  o String positionId
   o String positionName
   o String employerId
 }
@@ -23,8 +22,7 @@ transaction createPosition {
 transaction assignPosition {
  
   o String positionId
-  o Employee currentEmployee	optional
-  o Employee newEmployee
+  o String employeeId
   o DateTime hireDate
   
 }
@@ -33,7 +31,6 @@ transaction revokePosition {
  
   o String positionId
   o String currentEmployeeId 
-  o String newEmployeeId	optional
   o String terminationCause
   o Integer punctualityRating	range = [1,10]
   o Integer teamworkRating		range = [1,10]
@@ -41,4 +38,22 @@ transaction revokePosition {
   o Integer cultureRating 		range = [1,10]
   o DateTime terminationDate
   
+}
+
+event positionCreated {
+
+  o String positionId
+  
+}
+
+event positionAssigned {
+
+  o String positionId
+  o String employeeId
+}
+
+event positionRevoked {
+
+  o String positionId
+  o String employeeId
 }

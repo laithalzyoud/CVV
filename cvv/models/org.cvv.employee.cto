@@ -1,6 +1,5 @@
 namespace org.cvv.employee
 
-import org.cvv.employer.Contact
 
 participant Employee identified by employeeId {
   

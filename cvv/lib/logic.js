@@ -13,97 +13,120 @@
  */
 
 'use strict';
-/**
- * Write your transction processor functions here
- */
+
+import { emit } from "cluster";
 
 /**
- * Sample transaction
- * 
+ * Create position transaction
  * @param {org.cvv.position.createPosition} positionData
  * @transaction
  */
 
-
-
-function    createJob(positionData) {
-
-    /**
-     *  Validate the schedule data
-     * If the date is a past date then throw an error
-     */
-    // var timeNow = new Date().getTime();
-    // var schedTime = new Date(flightData.schedule).getTime();
-    // if(schedTime < timeNow){
-    //     throw new Error("Scheduled time cannot be in the past!!!");
-    // }
-
-    // Get the Asset Registry
+function    createPosition(positionData) {
+ 
+    var positionRegistry = {};
 
     return getAssetRegistry('cvv.position.position')
     
-        .then(function(positionRegistry){
-            // Now add the Flight - global function getFactory() called
+        .then(function(registry){
+
+            positionRegistry = registry;
+ 
+            var posArr = (positionData.positionName).split(" ");
+            var  positionId = positionData.employerId.substr(0,3);
+            for (var i =0; i < posArr.length ; i++)
+            positionId += posArr[i].charAt(0);
             var  factory = getFactory();
+            var  pos = factory.newResource('org.cvv.position','position',positionId);
+            pos.positionName = positionData.positionName;
+            pos.employerId= positionData.employerId;
 
-            var  NS =  'cvv.position';
+            return positionRegistry.add(position);
 
-            // Solution to exercise - Removed hardcoded value & invoked
-            // generate the flight ID
-            // 2.1 Set the flightNumber, flightId ... 
-            var  positionId = '111'//generatejobId(flightData.flightNumber,flightData.schedule);
-            var  position = factory.newResource(NS,'position',positionId);
-            position.positionName = 'Software Developer';
-            position.employerId='MIC22001';
+        }).then (function(){
 
-            NS2='cvv.employer'
-            //var sup_id='112'
-            
-            // var superVisor= factory.newResource(NS2,'Supervisor', sup_id);
-            // var fname='sanad';
-            // var lname='nimer';
-            // var deptname='cs';
-            // var emp_id='MIC001';
-            // var comp_name='microsoft';
-            // var comp_phone='0790773046';
-
-            // var contact=factory.newConcept(NS2,"Contact");
-            // contact.email="sanad.nimer@hotmail.com";
-            // contact.mobilenumber="+962790773046";
-            // contact.address="41, Mazen Al-Ajlouni";
-
-            // superVisor.contactInfo=contact;
-            // superVisor.firstName=fname;
-            // superVisor.lastName=lname;
-            // superVisor.deptName=deptname;
-            // superVisor.employerId=emp_id;
-            // superVisor.companyName=comp_name;
-            // superVisor.companyPhoneNo=comp_phone;
-
-            //job.supervisor=superVisor;
+            var event = getFactory().newEvent('org.cvv.position','positionCreated');
+            event.positionId = positionData.positionId;
+            emit(event);
 
 
-            
-
-            // Flight asset has an instance of the concept
-            // 2.2 Use the factory to create an instance of concept
-            //var route = factory.newConcept(NS,"Route");
-
-            // 2.3 Set the data in the concept 'route'
-            // route.origin = flightData.origin;
-            // route.destination = flightData.destination;
-            // route.schedule = flightData.schedule;
-
-            // 2.4 Set the route attribute on the asset
-            //flight.route = route;
-            
-
-            // 3 Emit the event FlightCreated
-            // var event = factory.newEvent(NS, 'FlightCreated');
-            // event.flightId = flightId;
-            // emit(event);
-
-            // 4. Add to registry
-            return jobRegistry.add(job);
         });
+}
+
+/**
+ * Assign position transaction
+ * @param {org.cvv.position.assignPosition} positionData
+ * @transaction
+ */
+
+ function   AssignPosition(positionData) {
+
+    var positionRegistry = {};
+    return getAssetRegistry('org.cvv.position.position')
+    .then(function(registry){
+
+        positionRegistry = registry;
+        return positionRegistry.get(positionData.positionId)})
+        .then (function(position){
+
+            if (!position) throw new Error("Position ID: " + positionData.positionId + " does not exist.");
+            var factory = getFactory();
+            var relationship = factory.newRelationship('org.cvv.employee','Employee',positionData.employeeId);
+            position.owner = relationship;
+            return positionRegistry.update(position);
+
+        })
+        .then(function(){
+
+            var event = getFactory().newEvent('org.cvv.position','positionAssigned');
+            event.positionId = positionData.positionId;
+            event.employeeId = positionData.employeeId;
+            emit(event);
+
+        })
+        .catch (function(error){
+
+            throw new Error(error);
+        });
+
+
+    }
+
+
+/**
+ * Revoke position transaction
+ * @param {org.cvv.position.revokePosition} positionData
+ * @transaction
+ */
+
+function revokePosition (positionData) {
+
+    var positionRegistry = {};
+    return getAssetRegistry('org.cvv.position.position')
+    .then(function(registry){
+
+        positionRegistry = registry;
+        return positionRegistry.get(positionData.positionId)})
+        .then (function(position){
+
+            if (!position) throw new Error("Position ID: " + positionData.positionId + " does not exist.");
+            var factory = getFactory();
+            var relationship = factory.newRelationship('org.cvv.employee','Employee',null);
+            position.owner = relationship;
+            return positionRegistry.update(position);
+
+        })
+        .then(function(){
+
+            var event = getFactory().newEvent('org.cvv.position','positionRevoked');
+            event.positionId = positionData.positionId;
+            event.employeeId = positionData.employeeId;
+            emit(event);
+
+        })
+        .catch (function(error){
+
+            throw new Error(error);
+        });
+
 }
