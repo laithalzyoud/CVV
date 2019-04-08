@@ -16,28 +16,27 @@
  * Sample access control list.
  */
 
-rule EverybodyCanReadEverything {
-    description: "Allow all participants read access to all resources"
+rule AllowAllEmployersToReadOtherEmployers {
+    description: "Allow all employers read access to all other employers"
     participant: "org.cvv.employer.Employer"
     operation: READ
-    resource: "org.cvv.**"
+    resource: "org.cvv.employer.Employer"
     action: ALLOW
 }
 
-rule EverybodyCanSubmitTransactions {
+rule AllowAllEmployersToReadTheirEmployees {
     description: "Allow all participants to submit transactions"
-    participant: "org.cvv.**"
-    operation: CREATE
-    resource: "org.cvv.**"
+    participant: "org.cvv.employer.Employer"
+    operation: READ
+    resource: "org.cvv.employee.Employee"
     action: ALLOW
 }
 
-rule OwnerHasFullAccessToTheirAssets {
+rule AllowAllEmployeesToReadEmployers {
     description: "Allow all participants full access to their assets"
-    participant(p): "org.cvv.**"
-    operation: ALL
-    resource(r): "org.cvv.**"
-    condition: (r.owner.getIdentifier() === p.getIdentifier())
+    participant: "org.cvv.employee.Employee"
+    operation: READ
+    resource: "org.cvv.employer.Employer"
     action: ALLOW
 }
 
@@ -62,5 +61,39 @@ rule NetworkAdminSystem {
     participant: "org.hyperledger.composer.system.NetworkAdmin"
     operation: ALL
     resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+rule AllowAllEmployersToCreatePositions {
+    description: "Allow all participants full access to their assets"
+    participant: "org.cvv.employer.Employer"
+    operation: CREATE
+    resource: "org.cvv.position.*"
+    transaction: "org.cvv.position.createPosition"
+    action: ALLOW
+}
+rule AllowAllEmployersToRevokePositions {
+    description: "Allow all participants full access to their assets"
+    participant: "org.cvv.employer.Employer"
+    operation: CREATE
+    resource: "org.cvv.position.*"
+    transaction: "org.cvv.position.revokePosition"
+    action: ALLOW
+}
+rule AllowAllEmployersToAssignPositions {
+    description: "Allow all participants full access to their assets"
+    participant: "org.cvv.employer.Employer"
+    operation: CREATE
+    resource: "org.cvv.position.*"
+    transaction: "org.cvv.position.assignPosition"
+    action: ALLOW
+}
+
+rule AllowAllEmployeesToReadTheirPositions {
+    description: "Allow all participants full access to their assets"
+    participant(p): "org.cvv.employee.Employee"
+    operation: READ
+    resource(r): "org.cvv.position.position"
+    condition: (r.owner.getIdentifier() === p.getIdentifier())
     action: ALLOW
 }

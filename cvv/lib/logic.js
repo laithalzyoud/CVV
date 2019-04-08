@@ -35,7 +35,7 @@ function    createPosition(positionData) {
             var posArr = (positionData.positionName).split(" ");
             var  positionId = positionData.employerId.substr(0,3);
             for (var i =0; i < posArr.length ; i++)
-            positionId += posArr[i].charAt(0);
+            positionId = positionId + posArr[i].charAt(0) + IDCounter().toString();
             var  factory = getFactory();
             var  pos = factory.newResource('org.cvv.position','position',positionId);
             pos.positionName = positionData.positionName;
@@ -130,3 +130,13 @@ function revokePosition (positionData) {
         });
 
 }
+
+function IDCounter() {
+
+    if ( typeof IDCounter.counter == 'undefined' ) 
+    {
+        IDCounter.counter = 1;
+    }
+        return ++IDCounter.counter;
+}
+
