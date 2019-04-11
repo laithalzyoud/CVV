@@ -14,7 +14,6 @@
 
 'use strict';
 
-import { emit } from "cluster";
 
 /**
  * Create position transaction

@@ -3,7 +3,7 @@
     "composer": "^0.20.8"
   },
   "name": "cvv",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Curriculum Vitae Verus",
   "scripts": {
     "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/cvv.bna",
